@@ -1,0 +1,30 @@
+table, td, th {
+    border-color: #F1F1F1
+}
+
+th {
+    width: 170px;
+    height: 23px;
+}
+
+td {
+    height: 95px;
+    border-color: #F0F0F0
+}
+
+#c_header th {
+    background-color: #BBBBBB;
+}
+
+#c_content div {
+    text-align: center;
+}
+
+#c_content td > div:first-child {
+    height: 23px;
+    background-color: #FAFAFA;
+}
+
+#c_content td > div:nth-child(2) {
+    height: calc(100% - 23px);
+}
