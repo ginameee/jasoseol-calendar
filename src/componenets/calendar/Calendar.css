@@ -4,6 +4,10 @@
     margin: 0 auto;
 }
 
+#calendar button {
+    cursor: pointer;
+}
+
 #header {
     text-align: center;
     padding-bottom: 10px;

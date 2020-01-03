@@ -1,7 +1,7 @@
 import React from 'react';
 import './Calendar.css';
 
-import Content from './CalendarContent';
+import CalendarContent from './CalendarContent';
 
 const today = new Date();
 
@@ -12,17 +12,49 @@ class Calendar extends React.Component {
         date: today.getDate()
     }
 
+    nextMonth = () => {
+        let tempDate = new Date(this.state.year, this.state.month, this.state.date);
+        let nextMonth = new Date(tempDate.setMonth(tempDate.getMonth() + 1));
+        
+        console.log("move next month !!!");
+
+        this.setState(
+            {
+                year: nextMonth.getFullYear(),
+                month: nextMonth.getMonth(),
+                date: nextMonth.getDate() 
+            }
+        );
+    };
+    
+    preMonth = () => {
+        let tempDate = new Date(this.state.year, this.state.month, this.state.date);
+        let preMonth = new Date(tempDate.setMonth(tempDate.getMonth() - 1));
+
+        console.log("move previous month !!!");
+
+        this.setState(
+            {
+                year: preMonth.getFullYear(),
+                month: preMonth.getMonth(),
+                date: preMonth.getDate() 
+            }
+        );
+    }
+
     render() {
+        console.log("Calendar render");
+
         return (
             <div id="calendar">
                 <hr></hr>
                 <div id="header">
-                    <button>이전 월</button>
+                    <button onClick={this.preMonth}>이전 월</button>
                     <h2>{this.state.year}년 {this.state.month + 1}월</h2>
-                    <button>다음 월</button>
+                    <button onClick={this.nextMonth}>다음 월</button>
                     <button id="btn_add">추가하기</button>
                 </div>
-                <Content year={this.state.year} month={this.state.month} date={this.state.date}/>
+                <CalendarContent year={this.state.year} month={this.state.month} date={this.state.date}/>
             </div>
         );
     }

@@ -23,8 +23,7 @@ class CalendarContent extends React.Component {
     getSchedules = () => {
         const schedules = sampleSchedule;
 
-        console.log(schedules);
-        this.setState({ schedules, isLoading: false }) // = this.setState({ movies: movies })
+        this.setState({ schedules, isLoading: false });
     }
 
     getSchedule = (dateObj) => {
@@ -34,8 +33,6 @@ class CalendarContent extends React.Component {
                 let year = ymdArr[0] * 1;
                 let month = ymdArr[1] * 1;
                 let date = ymdArr[2] * 1;
-
-                console.log(ymdArr);
 
                 return (
                     (year === dateObj.getFullYear() && month === dateObj.getMonth() + 1 && date === dateObj.getDate()) ? item.event : ""
@@ -63,10 +60,13 @@ class CalendarContent extends React.Component {
     };
 
     renderContent = () => {
+        console.log("render Content", this.props);
+        const today = new Date();
+        const dateObj = new Date(this.props.year, this.props.month, 1);
+        const strDay = dateObj.getDay();
+
         let calRows = [];
-        let strDay = new Date(this.props.year, this.props.month, 1).getDay();
-        let dateObj = new Date(this.props.year, this.props.month, 1);
-        let tempDateObj; 
+        let tempDateObj;
 
         for (let i = 0; i < this.state.calRowCnt; i++) {
             calRows.push(
@@ -77,20 +77,21 @@ class CalendarContent extends React.Component {
                                 let cellIdx = this.state.calColCnt * i + idx;
                                 let date;
 
-                                if (!tempDateObj && cellIdx < strDay) {
+                                if (cellIdx <= strDay) {
                                     tempDateObj = new Date(dateObj.getTime());
                                     tempDateObj.setDate(dateObj.getDate() - (strDay - cellIdx));
                                 }
                                 else {
                                     tempDateObj.setDate(tempDateObj.getDate() + 1);
                                 }
+
                                 
                                 date = tempDateObj.getDate();
 
                                 return (
-                                    <td key={cellIdx} className={
-                                        (tempDateObj.getMonth() === new Date().getMonth() && tempDateObj.getDate() === new Date().getDate()) ? "today" : ""
-                                        }>
+                                    <td key={cellIdx} 
+                                        className={(tempDateObj.getFullYear() === today.getFullYear() && tempDateObj.getMonth() === today.getMonth() && tempDateObj.getDate() === today.getDate()) ? "today" : ""}
+                                    >
                                         <div className="date" onClick={this.clickDate}>
                                             {date}
                                         </div>              
