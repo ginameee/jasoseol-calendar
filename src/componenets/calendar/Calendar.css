@@ -1,16 +1,25 @@
 #calendar {
-    width: 80%;
-    height: 80%;
+    width: 1220px;
+    height: 95%;
     margin: 0 auto;
 }
 
 #header {
-    width: 80%;
-    margin: 0 auto;
     text-align: center;
+    padding-bottom: 10px;
+    position: relative;
 }
 
 #header h2 {
     display: inline-block;
     padding: 0 15px;
+    margin: 0;
+    font-size: inherit;
+    font-weight: 500;
+}
+
+#header #btn_add {
+    position: absolute;
+    top: 2px;
+    right: 0px;
 }
