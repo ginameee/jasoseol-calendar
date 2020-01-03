@@ -3,12 +3,12 @@ import axios from 'axios';
 import sampleSchedule from '../../resources/data.json';
 import './CalendarContent.css';
 
+const calColCnt = 7;
+const calRowCnt = 5;
+const days = [ '일', '월', '화', '수', '목', '금', '토' ];
+
 class CalendarContent extends React.Component {
     state = {
-        calColCnt: 7,
-        calRowCnt: 5,
-        calLength: 35,
-        days: [ '일', '월', '화', '수', '목', '금', '토' ],
         isLoading: true,
         schedules: []
     }
@@ -17,34 +17,58 @@ class CalendarContent extends React.Component {
         super(props);
     }
 
-    clickDate = () => {
-    }
-
-    getSchedules = () => {
-        const schedules = sampleSchedule;
-
-        this.setState({ schedules, isLoading: false });
-    }
-
-    getSchedule = (dateObj) => {
-        return this.state.schedules.map(
-            (item, idx) => {
+    clickDate = (dateObj) => {
+        let dateStr = `${dateObj.getFullYear()}-${dateObj.getMonth() + 1}-${dateObj.getDate()}`;
+        let scheduleArr = this.state.schedules.filter(
+            (item) => {
                 let ymdArr = item.date.split("-");
                 let year = ymdArr[0] * 1;
                 let month = ymdArr[1] * 1;
                 let date = ymdArr[2] * 1;
 
-                return (
-                    (year === dateObj.getFullYear() && month === dateObj.getMonth() + 1 && date === dateObj.getDate()) ? item.event : ""
-                );
+                return (year === dateObj.getFullYear() && month === dateObj.getMonth() + 1 && date === dateObj.getDate());
+            }
+        );
+        let scheduleStr = scheduleArr.map(
+            (item) => {
+                return item.event;
+            }
+        ).join("\n");
+
+        alert(`${dateStr}\n${scheduleStr}`);
+    };
+
+    /**
+     * 전체 스케쥴을 얻어온다.
+     */
+    getAllSchedules = () => {
+        const schedules = sampleSchedule;
+
+        this.setState({ schedules, isLoading: false });
+    };
+
+    /**
+     * 날짜에 맞는 스케쥴들을 가져온다.
+     * @param {Date} dateObj 
+     * @return {Array}
+     */
+    getSchedules = (dateObj) => {
+        return this.state.schedules.filter(
+            (item) => {
+                let ymdArr = item.date.split("-");
+                let year = ymdArr[0] * 1;
+                let month = ymdArr[1] * 1;
+                let date = ymdArr[2] * 1;
+
+                return (year === dateObj.getFullYear() && month === dateObj.getMonth() + 1 && date === dateObj.getDate());
             }
         )
-    }
+    };
 
     renderHeader = () => {
         let headerCells = [];
 
-        this.state.days.forEach(
+        days.forEach(
             (day, idx) => {
                 headerCells.push(
                     <th key={idx}>{day}</th>
@@ -60,7 +84,6 @@ class CalendarContent extends React.Component {
     };
 
     renderContent = () => {
-        console.log("render Content", this.props);
         const today = new Date();
         const dateObj = new Date(this.props.year, this.props.month, 1);
         const strDay = dateObj.getDay();
@@ -68,14 +91,14 @@ class CalendarContent extends React.Component {
         let calRows = [];
         let tempDateObj;
 
-        for (let i = 0; i < this.state.calRowCnt; i++) {
+        for (let i = 0; i < calRowCnt; i++) {
             calRows.push(
                 <tr id="c_content" key={i}>
                     {
                         Array(7).fill(0).map(
                             (item, idx) => {
-                                let cellIdx = this.state.calColCnt * i + idx;
-                                let date;
+                                let cellIdx = calColCnt * i + idx;
+                                let cellDateObj;
 
                                 if (cellIdx <= strDay) {
                                     tempDateObj = new Date(dateObj.getTime());
@@ -85,18 +108,25 @@ class CalendarContent extends React.Component {
                                     tempDateObj.setDate(tempDateObj.getDate() + 1);
                                 }
 
-                                
-                                date = tempDateObj.getDate();
+                                cellDateObj = new Date(tempDateObj.getTime());
 
                                 return (
                                     <td key={cellIdx} 
                                         className={(tempDateObj.getFullYear() === today.getFullYear() && tempDateObj.getMonth() === today.getMonth() && tempDateObj.getDate() === today.getDate()) ? "today" : ""}
                                     >
-                                        <div className="date" onClick={this.clickDate}>
-                                            {date}
+                                        <div className="date" onClick={() => (this.clickDate(cellDateObj))}>
+                                            {cellDateObj.getDate()}
                                         </div>              
                                         <div className="schedule">
-                                            {this.getSchedule(tempDateObj)}
+                                            {
+                                                this.getSchedules(tempDateObj).map(
+                                                    (item) => {
+                                                        return (
+                                                            <span>{item.event}<br/></span>
+                                                        )       
+                                                    }       
+                                                )
+                                            }
                                         </div>
                                     </td>
                                 );
@@ -111,7 +141,7 @@ class CalendarContent extends React.Component {
     };
     
     componentDidMount() {
-        this.getSchedules();
+        this.getAllSchedules();
     }
 
     render() {

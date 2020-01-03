@@ -15,8 +15,6 @@ class Calendar extends React.Component {
     nextMonth = () => {
         let tempDate = new Date(this.state.year, this.state.month, this.state.date);
         let nextMonth = new Date(tempDate.setMonth(tempDate.getMonth() + 1));
-        
-        console.log("move next month !!!");
 
         this.setState(
             {
@@ -31,8 +29,6 @@ class Calendar extends React.Component {
         let tempDate = new Date(this.state.year, this.state.month, this.state.date);
         let preMonth = new Date(tempDate.setMonth(tempDate.getMonth() - 1));
 
-        console.log("move previous month !!!");
-
         this.setState(
             {
                 year: preMonth.getFullYear(),
@@ -43,8 +39,6 @@ class Calendar extends React.Component {
     }
 
     render() {
-        console.log("Calendar render");
-
         return (
             <div id="calendar">
                 <hr></hr>
