@@ -17,7 +17,7 @@ const defaultProps = {
 
 const propTypes = {
     isOpend: PropTypes.bool.isRequired,
-    onCloes: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
     onAdd: PropTypes.func.isRequired,
     year: PropTypes.number,
     month: PropTypes.number
@@ -59,6 +59,20 @@ class AddDialog extends React.Component {
       this.setState({ event: e.target.value });
     };
 
+    componentDidMount() {
+      this.setState(
+        { year: this.props.year, month: this.props.month }
+      );
+    };
+
+    componentWillReceiveProps(newProps) {
+      if (newProps.year !== this.props.year || newProps.month !== this.props.month) {
+        this.setState(
+          { date: new Date(newProps.year, newProps.month) }
+        );
+      }
+    }
+
     render() {
         return (
           <div>
@@ -72,17 +86,16 @@ class AddDialog extends React.Component {
                 <Modal.Title id='ModalHeader'>일정추가</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <p>
-                    <label for="eventDate">날짜</label><br></br>
+                <div>
+                    <label htmlFor="eventDate">날짜</label><br></br>
                     <DatePicker
                         selected={this.state.date}
                         onChange={this.changeDate}
                     />
-                </p>
-                <p>
-                    <label for="eventContent">내용</label><br></br>
+                    <br></br><br></br>
+                    <label htmlFor="eventContent">내용</label><br></br>
                     <textarea id="eventContent" rows="10" cols="30" value={this.state.event} onChange={this.changeEvent}/>
-                </p>
+                </div>
               </Modal.Body>
               <Modal.Footer>
                 <Modal.Dismiss className='btn btn-default'>취소</Modal.Dismiss>

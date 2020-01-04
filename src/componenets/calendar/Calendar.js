@@ -31,9 +31,8 @@ class Calendar extends React.Component {
                 let modeNm = `is${dialogNm}`;
                 let newState = {};
                 
-                console.log('cur: ', current);
                 newState[modeNm] = !current[modeNm];
-                console.log('new: ', newState); 
+                
                 return newState;
             }
         );
@@ -51,7 +50,6 @@ class Calendar extends React.Component {
                     ]
                 );
 
-                console.log(schedules);
                 return { schedules };
             }  
         );
@@ -59,7 +57,7 @@ class Calendar extends React.Component {
 
     openDialog = (dialogNm) => {
         this.setState(
-            (current) => {
+            current => {
                 let modeNm = `is${dialogNm}`;
                 let newState = {};
 
