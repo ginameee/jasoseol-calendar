@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import sampleSchedule from '../../resources/data.json';
+import serverConfig from '../../config/serverConfig.json';
 import './Calendar.css';
 
 import CalendarContent from './CalendarContent';
@@ -21,8 +23,15 @@ class Calendar extends React.Component {
     }
 
     getAllSchedules = () => {
-        const schedules = sampleSchedule;
-        this.setState({ schedules, isLoading: false });
+        let schedules = sampleSchedule;
+        
+        axios.get(`${serverConfig.url}/schedules?year=${this.state.year}&month=${this.state.month + 1}`)
+        .then(
+            (res) => {
+                schedules = schedules.concat(res.data);
+                this.setState({ schedules, isLoading: false });
+            }
+        );
     };
 
     closeDialog = (dialogNm) => {
@@ -36,22 +45,21 @@ class Calendar extends React.Component {
                 return newState;
             }
         );
-    }
+    };
 
     addSchedule = ({date, event}) => {
-        this.setState(
-            (current) => {
-                let schedules = current.schedules.concat(
-                    [
-                        {
-                            date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-                            event
-                        }
-                    ]
-                );
-
-                return { schedules };
-            }  
+        axios.post(
+            `${serverConfig.url}/schedules`,
+            {
+                date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+                event
+            }
+        )
+        .then(
+            this.getAllSchedules
+        )
+        .catch(
+            (err) => { console.error(err); }
         );
     };
 
@@ -68,30 +76,34 @@ class Calendar extends React.Component {
         );
     };
 
-    nextMonth = () => {
+    nextMonth = async () => {
         let tempDate = new Date(this.state.year, this.state.month, this.state.date);
         let nextMonth = new Date(tempDate.setMonth(tempDate.getMonth() + 1));
 
-        this.setState(
+        await this.setState(
             {
+                isLoading: false,
                 year: nextMonth.getFullYear(),
                 month: nextMonth.getMonth(),
                 date: nextMonth.getDate() 
             }
         );
+        this.getAllSchedules();
     };
     
-    preMonth = () => {
+    preMonth = async () => {
         let tempDate = new Date(this.state.year, this.state.month, this.state.date);
         let preMonth = new Date(tempDate.setMonth(tempDate.getMonth() - 1));
 
-        this.setState(
+        await this.setState(
             {
+                isLoading: false,
                 year: preMonth.getFullYear(),
                 month: preMonth.getMonth(),
                 date: preMonth.getDate() 
             }
         );
+        this.getAllSchedules();
     }
     
     componentDidMount() {
@@ -108,7 +120,9 @@ class Calendar extends React.Component {
                     <button onClick={this.nextMonth}>다음 월</button>
                     <button id="btn_add" onClick={() => { this.openDialog("Add") }}>추가하기</button>
                 </div>
-                <CalendarContent year={this.state.year} month={this.state.month} date={this.state.date} schedules={this.state.schedules}/>
+                {
+                    (this.state.isLoading) ? ( <h1>Data is loading... </h1> ) : <CalendarContent year={this.state.year} month={this.state.month} date={this.state.date} schedules={this.state.schedules}/>
+                }
                 <AddDialog 
                     isOpend={this.state.isAdd} 
                     onClose={() => { this.closeDialog("Add") }} 

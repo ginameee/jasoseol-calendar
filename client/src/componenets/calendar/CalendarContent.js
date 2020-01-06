@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import './CalendarContent.css';
 
 const calColCnt = 7;
@@ -24,10 +23,6 @@ class CalendarContent extends React.Component {
         isLoading: true,
         schedules: []
     }
-
-    addSchedule = () => {
-
-    };
 
     clickDate = (dateObj) => {
         let dateStr = `${dateObj.getFullYear()}-${dateObj.getMonth() + 1}-${dateObj.getDate()}`;
