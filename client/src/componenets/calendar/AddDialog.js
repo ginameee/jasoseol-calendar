@@ -91,6 +91,7 @@ class AddDialog extends React.Component {
                     <DatePicker
                         selected={this.state.date}
                         onChange={this.changeDate}
+                        dateFormat="yyyy-MM-dd"
                     />
                     <br></br><br></br>
                     <label htmlFor="eventContent">내용</label><br></br>
