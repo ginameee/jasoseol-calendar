@@ -10,8 +10,6 @@ createSchedule = async ({ date, content }) => {
         )
     `;
 
-    console.log(sql);
-
     const client = await dbPool.connect();
 
     try {

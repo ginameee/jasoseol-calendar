@@ -11,8 +11,13 @@ const router = express.Router();
 router.get(
     '/',
     async (req, res, next) => {
-        const schedules = await Schedules.readSchedules({ year: req.query.year, month: req.query.month });
-        res.json(schedules);
+        try {
+            const schedules = await Schedules.readSchedules({ year: req.query.year, month: req.query.month });
+            res.json(schedules);
+        }
+        catch (err) {
+            res.json({ result: 'failed', content: err });
+        }
     }
 );
 
@@ -22,19 +27,20 @@ router.get(
  */
 router.post(
     '/',
-    (req, res, next) => {
-        Schedules.createSchedule(
-            {
-                date: req.body.date,
-                content: req.body.event
-            }
-        )
-        .then(
-            () => { res.json({ result: 'success' }) } 
-        )
-        .catch(
-            (err) => { res.json({ result: 'failed', content: err }) }
-        );
+    async (req, res, next) => {
+        try {
+            await Schedules.createSchedule(
+                {
+                    date: req.body.date,
+                    content: req.body.event
+                }
+            );
+
+            res.json({ result: 'success' })
+        }
+        catch (err) {
+            res.json({ result: 'failed', content: err });
+        }
     }
 );
 
